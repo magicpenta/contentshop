@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http:// mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="panda.netease.course.dao.TransactionDao">
+	<select id="getTrx" parameterType="int" resultType="panda.netease.course.meta.Transaction">
+		select * from trx where personId=#{personId};
+	</select>
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http:// mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="panda.netease.course.dao.ProductDao">
+  	<select id="getProductList" resultMap="ProductMap">
+		select * from content left outer join trx on content.id = trx.contentId group by content.id, trx.contentId
+	</select>
+	<select id="getProductInfoList" parameterType="int" resultMap="ProductMap">
+		select * from content left outer join trx on content.id = trx.contentId where content.id = #{id}
+	</select>
+	<select id="getProduct" parameterType="int" resultMap="ProductDoMap">
+		select * from content where id = #{id}
+	</select>
+	<select id="getProductListById" parameterType="int" resultMap="ProductMap">
+		select * from content left outer join trx on content.id = trx.contentId where trx.personId = #{personId} 
+		group by trx.contentId order by content.id;
+	</select>
+	<insert id="addProduct" parameterType="panda.netease.course.meta.ProductPo" useGeneratedKeys="true" keyProperty="id">
+		insert into content(price, title, icon, abstract, text) values (#{price}, #{title}, #{image}, #{abs}, #{text})
+	</insert>
+	<insert id="buyProduct" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+		insert into trx(contentId, personId, price, time) 
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.contentId}, #{item.userId}, #{item.price}, #{item.time})
+		</foreach>
+	</insert>
+	<update id="editProduct" parameterType="panda.netease.course.meta.ProductPo" keyProperty="id">
+		update content set price=#{price}, title=#{title}, icon=#{image}, abstract=#{abs}, text=#{text} where id=#{id}
+	</update>
+	<delete id="deleteProduct" parameterType="int">
+		delete from content where id=#{id}
+	</delete>
+	<resultMap id="ProductMap" type="panda.netease.course.meta.ProductTo">
+		<id property="id" column="id" javaType="int" />
+		<result property="price" column="price" javaType="int" />
+		<result property="title" column="title" javaType="String" />
+		<result property="image" column="icon" javaType="String" />
+		<result property="abs" column="abstract" javaType="String" />
+		<result property="text" column="text" javaType="String" />
+		<result property="contentId" column="contentId" javaType="int" />
+		<result property="buyPrice" column="price" javaType="int" />
+		<result property="buyTime" column="time" javaType="long" />
+	</resultMap>
+	<resultMap id="ProductDoMap" type="panda.netease.course.meta.ProductPo">
+		<id property="id" column="id" javaType="int" />
+		<result property="price" column="price" javaType="int" />
+		<result property="title" column="title" javaType="String" />
+		<result property="image" column="icon" javaType="String" />
+		<result property="abs" column="abstract" javaType="String" />
+		<result property="text" column="text" javaType="String" />
+	</resultMap>
+</mapper>
